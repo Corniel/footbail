@@ -3,24 +3,46 @@ using System.Globalization;
 
 namespace Footbail
 {
-    /// <summary>Represents the football pitch.</summary>
-    public class FootballPitch
+    /// <summary>Represents a football pitch.</summary>
+    public class Pitch
     {
-        public FootballPitch(
+        /// <summary>Gets the pitch specifications for UEFA.</summary>
+        public static readonly Pitch UEFA = new Pitch
+        (
+            touchLine: 105,
+            goalLine: 68,
+            goal: 7.32
+        );
+
+        /// <summary>Gets the pitch specification for Futsal (with bouncing lines).</summary>
+        public static readonly Pitch Futsal = new Pitch
+        (
+            touchLine: 40,
+            goalLine: 22.5,
+            goal: 3,
+            bouncingLines: true
+        );
+
+        public Pitch(
             double touchLine, 
             double goalLine,
+            double goal,
             bool bouncingLines = false)
         {
             TouchLine = Guard.IsNumber(touchLine, nameof(touchLine));
             GoalLine = Guard.IsNumber(goalLine, nameof(goalLine));
+            Goal = Guard.IsNumber(goal, nameof(goal));
             BouncingLines = bouncingLines;
         }
 
-        /// <summary>Gets the touch line size (width) of the football pitch.</summary>
+        /// <summary>Gets the touch line size (width) of the pitch.</summary>
         public double TouchLine { get; }
 
-        /// <summary>Gets the goal line size (height) of the football pitch.</summary>
+        /// <summary>Gets the goal line size (height) of the pitch.</summary>
         public double GoalLine { get; }
+
+        /// <summary>Gets the inner edges of the goalposts.</summary>
+        public double Goal { get; }
 
         /// <summary>Indicates if the lines bounce (or not).</summary>
         public bool BouncingLines { get; }
@@ -40,9 +62,10 @@ namespace Footbail
         {
             return string.Format(
                 CultureInfo.InvariantCulture, 
-                "Touch line: {0}, Goal line: {1}{2}",
+                "Touch line: {0}, Goal line: {1}, Goal: {2}{3}",
                 TouchLine,
                 GoalLine,
+                Goal,
                 BouncingLines ? ", Bouncing lines" : ""
             );
         }
