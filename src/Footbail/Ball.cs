@@ -2,7 +2,7 @@
 
 namespace Footbail
 {
-    /// <summary>Represents the ball in a football game.</summary>
+    /// <summary>Represents the ball in a football match.</summary>
     public class Ball
     {
         /// <summary>Creates a new instance of the <see cref="Ball"/> class.</summary>

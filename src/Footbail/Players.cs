@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Footbail
 {
-    /// <summary>Represents all players of a football game.</summary>
+    /// <summary>Represents all players of a football match.</summary>
     [DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(CollectionDebugView))]
     public sealed class Players : IEnumerable<Player>
     {
