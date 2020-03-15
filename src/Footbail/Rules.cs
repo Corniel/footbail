@@ -21,16 +21,9 @@
         public Duration Duration { get; set; }
 
         public int PlayerCount { get; set; }
-
         public bool WithOffside { get; set; }
-
         public bool WithKeeper { get; set; }
 
-        public double BallAccelaration { get; set; } = 0.99;
-
-        public double OldMoveNewMoveRatio { get; set; } = 0.75;
-        public double NewMoveOldMoveRation => 1 - OldMoveNewMoveRatio;
-
-        public double ShootSlowdownFactor { get; set; } = 0.5;
+        public Physics Physics { get; set; } = new Physics();
     }
 }
