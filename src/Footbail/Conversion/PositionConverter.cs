@@ -1,9 +1,8 @@
 ﻿using Qowaiv.Conversion;
-using System.Globalization;
 
 namespace Footbail.Conversion
 {
-    /// <summary><see cref="System.ComponentModel.TypeConverter"/> for <see cref="Position"/>.</summary>
+    /// <summary><see cref="TypeConverter"/> for <see cref="Position"/>.</summary>
     public sealed class PositionConverter : SvoTypeConverter<Position>
     {
         /// <inheritdoc/>

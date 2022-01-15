@@ -8,7 +8,7 @@
             {
                 return new Rules
                 {
-                    Pitch = Pitch.UEFA,
+                    Pitch = Pitch.FIFA,
                     Duration = Duration.FromMinutes(90),
                     PlayerCount = 11,
                     WithOffside = true,

@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace Footbail
+﻿namespace Footbail
 {
     /// <summary>Represents the ball in a football match.</summary>
     public class Ball
