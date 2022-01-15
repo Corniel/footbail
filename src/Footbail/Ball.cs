@@ -1,36 +1,47 @@
-﻿namespace Footbail
+﻿namespace Footbail;
+
+/// <summary>Represents the ball in a football match.</summary>
+public readonly partial struct Ball
 {
-    /// <summary>Represents the ball in a football match.</summary>
-    public class Ball
+    /// <summary>Creates a new instance of the <see cref="Ball"/> class.</summary>
+    public Ball(Position position, Velocity velocity)
     {
-        /// <summary>Creates a new instance of the <see cref="Ball"/> class.</summary>
-        public Ball(Position position, Velocity velocity)
-        {
-            Position = position;
-            Velocity = velocity;
-        }
-
-        /// <summary>Gets the current position of the ball.</summary>
-        public Position Position { get; private set; }
-
-        /// <summary>Gets the current velocity of the ball.</summary>
-        public Velocity Velocity { get; private set; }
-
-        /// <summary>Moves the ball with the specified velocity.</summary>
-        public void Move(Velocity velocity)
-        {
-            Velocity = velocity;
-            Position += Velocity;
-        }
-
-        /// <summary>Represents the ball as a <see cref="string"/>.</summary>
-        public override string ToString()
-        {
-            return string.Format(
-                CultureInfo.InvariantCulture, 
-                "Position: {0}, Velocity: {1}",
-                Position,
-                Velocity);
-        }
+        Position = position;
+        Velocity = velocity;
     }
+
+    /// <summary>Gets the current position of the ball.</summary>
+    public readonly Position Position;
+
+    /// <summary>Gets the current velocity of the ball.</summary>
+    public readonly Velocity Velocity;
+
+    /// <summary>Moves the ball on tick (half a second) based on the physics.</summary>
+    [Pure]
+    public Ball Move(Physics physics)
+    {
+        const int steps = 16;
+        var position = Position + Velocity / steps;
+        var velocity = Velocity;
+
+        for (var step = 1; step < steps; step++)
+        {
+            var v = velocity.Speed;
+            var Fd = physics.Fd(v);
+            var a = Fd / physics.m;
+            var v_min = a / Duration.SecondsPerTick / steps;
+            velocity = velocity.WithSpeed(Math.Max(0, v - v_min));
+            position += velocity / steps;
+        }
+        return new(position, velocity);
+    }
+
+    /// <summary>Represents the ball as a <see cref="string"/>.</summary>
+    [Pure]
+    public override string ToString()
+        => string.Format(
+            CultureInfo.InvariantCulture,
+            "Position: {0}, Velocity: {1}",
+            Position,
+            Velocity);
 }

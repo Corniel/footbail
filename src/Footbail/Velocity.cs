@@ -84,12 +84,20 @@ public readonly struct Velocity : IVector, IEquatable<Velocity>
         Guard.IsNumber(factor, nameof(factor));
         return new Velocity(X * factor, Y * factor);
     }
+    /// <summary>Multiplies the velocity with a factor.</summary>
+    private Velocity Divide(double factor)
+    {
+        Guard.IsNumber(factor, nameof(factor));
+        if (factor == default) throw new DivideByZeroException();
+        return new Velocity(X / factor, Y / factor);
+    }
 
     /// <summary>Adds two velocities.</summary>
     public static Velocity operator +(Velocity l, Velocity r) => l.Add(r);
 
     /// <summary>Multiplies the velocity with the specified factor.</summary>
     public static Velocity operator *(Velocity vector, double factor) => vector.Multiply(factor);
+    public static Velocity operator /(Velocity vector, double factor) => vector.Divide(factor);
 
     /// <summary>Parses the velocity.</summary>
     [Pure]
