@@ -1,11 +1,27 @@
-﻿namespace Footbail;
+﻿using Footbail.Diagnostics;
+using System.Collections;
 
-/// <summary>The two teams.</summary>
-public enum Team
+namespace Footbail;
+
+[DebuggerDisplay("{Id}, Players: {Count}")]
+[DebuggerTypeProxy(typeof(CollectionDebugView))]
+public sealed class Team : IReadOnlyCollection<Player>
 {
-    /// <summary>Team left.</summary>
-    Left = 0,
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+    private readonly Player[] Players;
 
-    /// <summary>Team right.</summary>
-    Right = 1,
+    public Team(TeamId id, params Player[] players)
+    {
+        Id = id;
+        Players = players ?? Array.Empty<Player>();
+    }
+
+    public int Count => Players.Length;
+
+    public TeamId Id { get; }
+    public Player this[int number] => Players[number - 1];
+
+    public IEnumerator<Player> GetEnumerator() => Players.AsEnumerable().GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
