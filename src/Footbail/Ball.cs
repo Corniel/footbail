@@ -20,8 +20,9 @@ public readonly partial struct Ball
     [Pure]
     public Ball Move(Physics physics)
     {
-        const int steps = 16;
-        var position = Position + Velocity / steps;
+        const int steps = 10;
+        var fraction = Duration.SecondsPerTick * steps;
+        var position = Position + Velocity / fraction;
         var velocity = Velocity;
 
         for (var step = 1; step < steps; step++)
@@ -29,9 +30,9 @@ public readonly partial struct Ball
             var v = velocity.Speed;
             var Fd = physics.Fd(v);
             var a = Fd / physics.m;
-            var v_min = a / Duration.SecondsPerTick / steps;
+            var v_min = a / fraction;
             velocity = velocity.WithSpeed(Math.Max(0, v - v_min));
-            position += velocity / steps;
+            position += velocity / fraction;
         }
         return new(position, velocity);
     }
