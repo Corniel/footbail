@@ -3,8 +3,8 @@
 /// <summary>Represents the duration of a match.</summary>
 public readonly struct Duration : IEquatable<Duration>, IComparable<Duration>
 {
-    public static readonly int SecondsPerTick = 2;
-    public static readonly int MinutesPerTick = 2 * 60;
+    public static readonly int TicksPerSecond = 100;
+    public static readonly int TicksPerMinute = TicksPerSecond * 60;
 
     /// <summary>Gets a zero duration.</summary>
     public static readonly Duration Zero;
@@ -37,12 +37,12 @@ public readonly struct Duration : IEquatable<Duration>, IComparable<Duration>
     public override string ToString()
     {
         var buffer = Ticks;
-        var odd = (buffer & 1) == 1 ? 5 : 0;
-        buffer >>= 1;
+        var mini = buffer % TicksPerSecond;
+        buffer /= TicksPerSecond;
         var seconds = buffer % 60;
         var minutes = buffer / 60;
 
-        return string.Format(CultureInfo.InvariantCulture, "{0}:{1:00}.{2}", minutes, seconds, odd);
+        return string.Format(CultureInfo.InvariantCulture, "{0}:{1:00}.{2:00}", minutes, seconds, mini);
     }
 
     [Pure]
@@ -51,11 +51,16 @@ public readonly struct Duration : IEquatable<Duration>, IComparable<Duration>
     [Pure]
     private Duration Decrement() => new(Ticks - 1);
 
+    [Pure]
+    private Duration Subtract(Duration other) => new(Ticks - other.Ticks);
+
     /// <summary>Increases the duration with 1 tick.</summary>
     public static Duration operator ++(Duration duration) => duration.Increment();
     
     /// <summary>Decreases the duration with 1 tick.</summary>
     public static Duration operator --(Duration duration) => duration.Decrement();
+    
+    public static Duration operator -(Duration left, Duration rigth) => left.Subtract(rigth);
 
     public static bool operator ==(Duration l, Duration r) => l.Equals(r);
     public static bool operator !=(Duration l, Duration r) => !(l == r);
@@ -66,8 +71,8 @@ public readonly struct Duration : IEquatable<Duration>, IComparable<Duration>
     public static bool operator <=(Duration l, Duration r) => l.CompareTo(r) <= 0;
 
     /// <summary>Gets the duration based on seconds.</summary>
-    public static Duration FromSeconds(int seconds) => new(seconds * SecondsPerTick);
+    public static Duration FromSeconds(int seconds) => new(seconds * TicksPerSecond);
 
     /// <summary>Gets the duration based on minutes.</summary>
-    public static Duration FromMinutes(int minutes) => new(minutes * MinutesPerTick);
+    public static Duration FromMinutes(int minutes) => new(minutes * TicksPerMinute);
 }

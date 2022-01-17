@@ -21,7 +21,7 @@ public readonly struct Player
     public Player Move(Velocity velocity)
     {
         velocity += Velocity;
-        velocity /= 2 * Duration.SecondsPerTick;
+        velocity /= 2 * Duration.TicksPerSecond;
         return new(Position + velocity, velocity);
     }
 
