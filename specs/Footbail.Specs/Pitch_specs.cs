@@ -1,4 +1,6 @@
-﻿namespace Pitch_specs;
+﻿using static Footbail.Physics;
+
+namespace Pitch_specs;
 
 public class Out_of_play
 {
@@ -8,5 +10,5 @@ public class Out_of_play
     [TestCase(true, "(-53, +33)", "Left")]
     [TestCase(true, "(+53, +33)", "Right")]
     public void OutOfPlay(bool outOfPlay, Position position, string message)
-        => Pitch.FIFA.OutOfPlay(position).Should().Be(outOfPlay, because: message);
+        => PitchPhysics.FIFA.OutOfPlay(position).Should().Be(outOfPlay, because: message);
 }

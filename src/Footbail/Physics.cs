@@ -3,6 +3,7 @@
 public sealed partial record Physics
 {
     public BallPhysics Ball { get; init; } = new BallPhysics();
+    public PitchPhysics Pitch { get; init; } = PitchPhysics.FIFA;
 
     /// <summary>Air density (default: 1.225kg/m³).</summary>
     public double ρ { get; init; } = 1.225;
