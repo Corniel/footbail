@@ -15,18 +15,6 @@ public readonly struct Angle
     /// <summary>Creates a new instance of the <see cref="Angle"/> struct.</summary>
     private Angle(double angle) => value = angle;
 
-    /// <summary>Creates a velocity from the angle with the specified speed.</summary>
-    [Pure]
-    public Velocity Velocity(double speed)
-    {
-        Guard.IsNumber(speed, nameof(speed));
-
-        var x = Math.Cos(value);
-        var y = Math.Sin(value);
-
-        return new Velocity(x * speed, y * speed);
-    }
-  
     /// <summary>Represents the angle as a <see cref="string"/>.</summary>
     [Pure]
     public override string ToString() => (value / PI).ToString(CultureInfo.InvariantCulture) + 'π';
@@ -40,7 +28,7 @@ public readonly struct Angle
 
     /// <summary>Creates an angle specified as a fraction of π.</summary>
     [Pure]
-    public static Angle Pi(double fraction) => new Angle(Guard.IsNumber(fraction, nameof(fraction)) * PI);
+    public static Angle Pi(double fraction) => new(Guard.IsNumber(fraction, nameof(fraction)) * PI);
 
     /// <summary>Returns the angle whose tangent is the quotient of two specified numbers.</summary>
     [Pure]

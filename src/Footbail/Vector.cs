@@ -29,23 +29,26 @@ public static class Vector
     /// to create an <see cref="IVector"/>.
     /// </summary>
     /// <remarks>
-    /// Of the format (-?[0-9]+.[0-9]*, -?[0-9]+.[0-9])
+    /// Of the format (-?[0-9]+.[0-9]*, -?[0-9]+.[0-9], -?[0-9]+.[0-9])
     /// </remarks>
-    public static bool TryParse(string str, out double x, out double y)
+    public static bool TryParse(string? str, out double x, out double y, out double z)
     {
         x = default;
         y = default;
+        z = default;
 
         if (!string.IsNullOrEmpty(str) && str[0] == '(' && str[^1] == ')')
         {
             var splitted = str[1..^1].Split(',');
 
-            if (splitted.Length == 2)
+            if (splitted.Length == 3)
             {
                 return double.TryParse(splitted[0].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out x)
                     && double.TryParse(splitted[1].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out y)
+                    && double.TryParse(splitted[2].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out z)
                     && IsNumber(x)
-                    && IsNumber(y);
+                    && IsNumber(y)
+                    && IsNumber(z);
             }
         }
         return false;

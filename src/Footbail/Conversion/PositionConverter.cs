@@ -6,6 +6,6 @@ namespace Footbail.Conversion
     public sealed class PositionConverter : SvoTypeConverter<Position>
     {
         /// <inheritdoc/>
-        protected override Position FromString(string str, CultureInfo culture) => Position.Parse(str);
+        protected override Position FromString(string? str, CultureInfo? culture) => Position.Parse(str);
     }
 }

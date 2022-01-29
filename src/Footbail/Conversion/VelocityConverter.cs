@@ -6,6 +6,6 @@ namespace Footbail.Conversion
     public sealed class VelocityConverter : SvoTypeConverter<Velocity>
     {
         /// <inheritdoc/>
-        protected override Velocity FromString(string str, CultureInfo culture) => Velocity.Parse(str);
+        protected override Velocity FromString(string? str, CultureInfo? culture) => Velocity.Parse(str);
     }
 }

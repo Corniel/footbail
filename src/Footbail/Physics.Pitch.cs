@@ -15,18 +15,18 @@ public sealed partial record Physics
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private double MaxX => TouchLine / 2;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private double MinY => -GoalLine / 2;
+        private double MinZ => -GoalLine / 2;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private double MaxY => GoalLine / 2;
+        private double MaxZ => GoalLine / 2;
 
         /// <summary>Returns true if the position is out-of-play.</summary>
         public bool OutOfPlay(Position position)
         {
             var x = position.X;
-            var y = position.Y;
+            var z = position.Z;
 
             return x < MinX || x > MaxX
-                || y < MinY || y > MaxY;
+                || z < MinZ || z > MaxZ;
         }
 
         /// <inheritdoc/>

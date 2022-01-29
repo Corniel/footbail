@@ -6,7 +6,10 @@
         /// <summary>The X-component of the vector.</summary>
         double X { get; }
 
-        /// <summary>The X-component of the vector.</summary>
+        /// <summary>The Y-component of the vector.</summary>
         double Y { get; }
+
+        /// <summary>The Z-component of the vector.</summary>
+        double Z { get; }
     }
 }
