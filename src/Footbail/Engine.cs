@@ -13,13 +13,13 @@ public sealed class Engine
         var steps = Duration.Zero;
         var simulated = match;
         var ball = match.Ball;
-        var ballPlay = match.BallPlay;
+        var ballPlay = BallPlay.InPlay;
         var left = match.Left.ToArray();
         var right = match.Right.ToArray();
         var left_v = Velocities(TeamId.Left, left, actions);
         var right_v = Velocities(TeamId.Right, right, actions);
 
-        while (steps < duration)
+        while (steps < duration && ballPlay == BallPlay.InPlay)
         {
             steps++;
 
@@ -27,25 +27,28 @@ public sealed class Engine
 
             if (Physics.Pitch.OutOfPlay(ball.Position))
             {
-                //// TODO: ball in goal ball.Position.Y < Physics.Pitch.Goal
-                //// TODO: re-arrange players
-                //if (ball.Position.X < -Physics.Pitch.TouchLine / 2)
-                //{
-                //    simulated = simulated with { Ball = Footbail.Ball.CenterSpot, BallPlay = BallPlay.KickOff, Score = simulated.Score.RightScored() };
-                //}
-                //else if (ball.Position.X > +Physics.Pitch.TouchLine / 2)
-                //{
-                //    simulated = simulated with { Ball = Footbail.Ball.CenterSpot, BallPlay = BallPlay.KickOff, Score = simulated.Score.LeftScored() };
-                //}
-                //else if (Math.Abs(ball.Position.Z) > Physics.Pitch.GoalLine / 2)
-                //{
-                //    simulated = simulated with { Ball = ball, BallPlay = BallPlay.ThrowIn };
-                //}
-                //else
-                //{
-                //    throw new NotImplementedException();
-                //}
-                //steps = Duration.Zero;
+                // TODO: ball in goal ball.Position.Y < Physics.Pitch.Goal
+                // TODO: re-arrange players
+                if (ball.Position.X < -Physics.Pitch.TouchLine / 2)
+                {
+                    ball = Footbail.Ball.CenterSpot;
+                    ballPlay = BallPlay.KickOff;
+                    simulated = simulated with { Score = simulated.Score.RightScored() };
+                }
+                else if (ball.Position.X > +Physics.Pitch.TouchLine / 2)
+                {
+                    ball = Footbail.Ball.CenterSpot;
+                    ballPlay = BallPlay.KickOff;
+                    simulated = simulated with { Score = simulated.Score.LeftScored() };
+                }
+                else if (Math.Abs(ball.Position.Z) > Physics.Pitch.GoalLine / 2)
+                {
+                    ballPlay = BallPlay.ThrowIn;
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
             }
             else
             {
