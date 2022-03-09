@@ -3,6 +3,8 @@
 /// <summary>Represents the ball in a football match.</summary>
 public readonly partial struct Ball
 {
+    public static readonly Ball CenterSpot;
+
     /// <summary>Creates a new instance of the <see cref="Ball"/> class.</summary>
     public Ball(Position position, Velocity velocity)
     {

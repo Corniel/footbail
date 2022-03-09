@@ -9,7 +9,7 @@ internal class Simulate
     {
         var engine = new Engine();
         var ball = new Ball(default, new Velocity(x: initial, y: 0, z: 0));
-        var match = new Match(ball, new Team(TeamId.Left), new Team(TeamId.Right), Duration.FromMinutes(45), Score.Initial);
+        var match = new Match(BallPlay.InPlay, ball, new Team(TeamId.Left), new Team(TeamId.Right), Duration.FromMinutes(45), Score.Initial);
         match = engine.Simulate(match, Duration.FromSeconds(seconds));
         ball = match.Ball;
         ball.Position.Round(4).X.Should().Be(distance);
