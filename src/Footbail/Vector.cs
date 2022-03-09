@@ -1,4 +1,6 @@
-﻿namespace Footbail;
+﻿using static System.FormattableString;
+
+namespace Footbail;
 
 /// <summary>Helper class for shared logic on a <see cref="IVector"/>.</summary>
 public static class Vector
@@ -22,8 +24,7 @@ public static class Vector
         => unchecked(@this.X.GetHashCode() ^ (@this.Y.GetHashCode() * 317));
 
     /// <summary>Represents the <see cref="IVector"/> as a <see cref="string"/>.</summary>
-    public static string ToString(IVector @this)
-        => string.Format(CultureInfo.InvariantCulture, "({0}, {1})", @this.X, @this.Y);
+    public static string ToString(IVector @this) => Invariant($"({@this.X}, {@this.Y}, {@this.Z})");
 
     /// <summary>Tries to parse a <paramref name="x"/> and a <paramref name="y"/>
     /// to create an <see cref="IVector"/>.
