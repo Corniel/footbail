@@ -2,5 +2,6 @@
 
 public interface PlayerAction
 {
-    public int Number { get; }
+    TeamId Team { get; }
+    int Number { get; }
 }

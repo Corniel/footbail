@@ -1,4 +1,6 @@
-﻿namespace Footbail;
+﻿using Footbail.Actions;
+
+namespace Footbail;
 
 public sealed class Engine
 {
@@ -6,44 +8,62 @@ public sealed class Engine
 
     public Physics Physics { get; }
 
-    public Match Simulate(Match match, Duration duration)
+    public Match Simulate(Match match, IReadOnlyCollection<PlayerAction> actions, Duration duration)
     {
-        var steps = duration;
+        var steps = Duration.Zero;
         var simulated = match;
-        while (steps > Duration.Zero)
+        var ball = match.Ball;
+        var ballPlay = match.BallPlay;
+        var left = match.Left.ToArray();
+        var right = match.Right.ToArray();
+        var left_v = left.Select((_, index) => actions.OfType<Move>().FirstOrDefault(m => m.Team == TeamId.Left && m.Number == index + 1)?.Velocity ?? default).ToArray();
+        var right_v = right.Select((_, index) => actions.OfType<Move>().FirstOrDefault(m => m.Team == TeamId.Right && m.Number == index + 1)?.Velocity ?? default).ToArray();
+
+        while (steps < duration)
         {
-            var ball = Ball(simulated.Ball);
+            steps++;
+
+            ball = Ball(ball);
 
             if (Physics.Pitch.OutOfPlay(ball.Position))
             {
-                // TODO: ball in goal ball.Position.Y < Physics.Pitch.Goal
-                // TODO: re-arrange players
-                if (ball.Position.X < -Physics.Pitch.TouchLine / 2)
-                {
-                    simulated = simulated with { Ball = Footbail.Ball.CenterSpot, BallPlay = BallPlay.KickOff, Score = simulated.Score.RightScored() };
-                }
-                else if (ball.Position.X > +Physics.Pitch.TouchLine / 2)
-                {
-                    simulated = simulated with { Ball = Footbail.Ball.CenterSpot, BallPlay = BallPlay.KickOff, Score = simulated.Score.LeftScored() };
-                }
-                else if (Math.Abs(ball.Position.Z) > Physics.Pitch.GoalLine / 2)
-                {
-                    simulated = simulated with { Ball = ball, BallPlay = BallPlay.ThrowIn };
-                }
-                else
-                {
-                    throw new NotImplementedException();
-                }
-                steps = Duration.Zero;
+                //// TODO: ball in goal ball.Position.Y < Physics.Pitch.Goal
+                //// TODO: re-arrange players
+                //if (ball.Position.X < -Physics.Pitch.TouchLine / 2)
+                //{
+                //    simulated = simulated with { Ball = Footbail.Ball.CenterSpot, BallPlay = BallPlay.KickOff, Score = simulated.Score.RightScored() };
+                //}
+                //else if (ball.Position.X > +Physics.Pitch.TouchLine / 2)
+                //{
+                //    simulated = simulated with { Ball = Footbail.Ball.CenterSpot, BallPlay = BallPlay.KickOff, Score = simulated.Score.LeftScored() };
+                //}
+                //else if (Math.Abs(ball.Position.Z) > Physics.Pitch.GoalLine / 2)
+                //{
+                //    simulated = simulated with { Ball = ball, BallPlay = BallPlay.ThrowIn };
+                //}
+                //else
+                //{
+                //    throw new NotImplementedException();
+                //}
+                //steps = Duration.Zero;
             }
             else
             {
-                simulated = simulated with { Ball = ball };
-                steps--;
+                ballPlay = BallPlay.InPlay;
+                Move(left, left_v);
+                Move(right, right_v);
             }
         }
-        return simulated with { TimeLeft = simulated.TimeLeft - duration };
+        return simulated with
+        {
+            Ball = ball,
+            BallPlay = ballPlay,
+            TimeLeft = simulated.TimeLeft - steps,
+            Left = new(TeamId.Left, left),
+            Right = new(TeamId.Right, left),
+        };
     }
+
     private Ball Ball(Ball ball)
     {
         var position = ball.Position;
@@ -56,5 +76,20 @@ public sealed class Engine
         position += velocity / Duration.TicksPerSecond;
 
         return new(position, velocity);
+    }
+
+    private static void Move(Player[] players, Velocity[] velocities)
+    {
+        for (var index = 0; index < players.Length; index++)
+        {
+            players[index] = Move(players[index], velocities[index]);
+        }
+    }
+
+    private static Player Move(Player player, Velocity velocity)
+    {
+        velocity += player.Velocity;
+        velocity /= 2 * Duration.TicksPerSecond;
+        return new(player.Position + velocity, velocity);
     }
 }

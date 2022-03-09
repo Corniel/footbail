@@ -16,15 +16,6 @@ public readonly struct Player
     /// <summary>Gets the current velocity of the player.</summary>
     public readonly Velocity Velocity;
 
-    /// <summary>Moves the player on tick.</summary>
-    [Pure]
-    public Player Move(Velocity velocity)
-    {
-        velocity += Velocity;
-        velocity /= 2 * Duration.TicksPerSecond;
-        return new(Position + velocity, velocity);
-    }
-
     /// <summary>Represents the player as a <see cref="string"/>.</summary>
     [Pure]
     public override string ToString()
