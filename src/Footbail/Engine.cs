@@ -16,8 +16,8 @@ public sealed class Engine
         var ballPlay = match.BallPlay;
         var left = match.Left.ToArray();
         var right = match.Right.ToArray();
-        var left_v = left.Select((_, index) => actions.OfType<Move>().FirstOrDefault(m => m.Team == TeamId.Left && m.Number == index + 1)?.Velocity ?? default).ToArray();
-        var right_v = right.Select((_, index) => actions.OfType<Move>().FirstOrDefault(m => m.Team == TeamId.Right && m.Number == index + 1)?.Velocity ?? default).ToArray();
+        var left_v = Velocities(TeamId.Left, left, actions);
+        var right_v = Velocities(TeamId.Right, right, actions);
 
         while (steps < duration)
         {
@@ -63,6 +63,14 @@ public sealed class Engine
             Right = new(TeamId.Right, left),
         };
     }
+
+    private static Velocity[] Velocities(TeamId team, Player[] players, IReadOnlyCollection<PlayerAction> actions)
+        => players
+        .Select((_, index) => actions
+            .OfType<Move>()
+            .FirstOrDefault(m => m.Team == team && m.Number == index + 1)?
+            .Velocity ?? Velocity.Zero)
+        .ToArray();
 
     private Ball Ball(Ball ball)
     {
