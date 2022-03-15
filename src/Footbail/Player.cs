@@ -4,6 +4,9 @@
 public readonly struct Player
 {
     /// <summary>Creates a new instance of the <see cref="Player"/> class.</summary>
+    public Player(Position position) : this(position, Velocity.Zero) { }
+
+    /// <summary>Creates a new instance of the <see cref="Player"/> class.</summary>
     public Player(Position position, Velocity velocity)
     {
         Position = position;

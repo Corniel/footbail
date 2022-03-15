@@ -39,12 +39,16 @@ public sealed class Engine
                     ball = Footbail.Ball.CenterSpot;
                     break;
                 case BallPlay.ThrowIn:
-                    // TODO: get closed by none goalkeeper
+                    var team = possession == TeamId.Left ? right : left;
+                    team[team.ClosedBy(ball.Position)] = new Player(ball.Position);
                     break;
                 case BallPlay.GoalKick:
+                    // TODO: position ball an goally.
                     break;
                 case BallPlay.CornerKick:
-                    // TODO: get closed by none goalkeeper
+                    team = possession == TeamId.Left ? right : left;
+                    // TODO: corner for ball and player.
+                    team[team.ClosedBy(ball.Position)] = new Player(ball.Position);
                     break;
                 case BallPlay.IndirectFreeKick:
                     // TODO: get closed by

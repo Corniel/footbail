@@ -68,6 +68,10 @@ public readonly struct Position : IVector, IEquatable<Position>
     [Pure]
     private Position Add(Velocity velocity) => new(X + velocity.X, Y + velocity.Y, Z + velocity.Z);
 
+    /// <summary>Adds a velocity to the position.</summary>
+    [Pure]
+    private Velocity Subtract(Position other) => new(X - other.X, Y - other.Y, Z - other.Z);
+
     /// <summary>Returns true if both positions are equal.</summary>
     public static bool operator ==(Position left, Position right) => left.Equals(right);
 
@@ -76,6 +80,9 @@ public readonly struct Position : IVector, IEquatable<Position>
 
     /// <summary>Adds a velocity to the position.</summary>
     public static Position operator +(Position position, Velocity velocity) => position.Add(velocity);
+
+    /// <summary>The distance between the two positions.</summary>
+    public static Velocity operator -(Position position, Position other) => position.Subtract(other);
 
     /// <summary>Parses the position.</summary>
     [Pure]
