@@ -11,22 +11,40 @@ public sealed partial record Physics
         public static readonly PitchPhysics Futsal = new(TouchLine: 40, GoalLine: 22.5, Goal: 3);
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private double MinX => -TouchLine / 2;
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private double MaxX => TouchLine / 2;
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private double MinZ => -GoalLine / 2;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private double MaxZ => GoalLine / 2;
 
         /// <summary>Returns true if the position is out-of-play.</summary>
-        public bool OutOfPlay(Position position)
+        public BallPlay OutOfPlay(Position position, TeamId possession)
         {
-            var x = position.X;
-            var z = position.Z;
-
-            return x < MinX || x > MaxX
-                || z < MinZ || z > MaxZ;
+            var x = position.X.Abs();
+            var z = position.Z.Abs();
+            
+            if (x <= MaxX && z <= MaxZ)
+            {
+                return BallPlay.InPlay;
+            }
+            else if(z > MaxZ)
+            {
+                return BallPlay.ThrowIn;
+            }
+            if(position.X > MaxX)
+            {
+                if (z < Goal / 2)
+                {
+                    return BallPlay.KickOff;
+                }
+                else return possession == TeamId.Left ? BallPlay.GoalKick : BallPlay.CornerKick;
+            }
+            else
+            {
+                if (z < Goal / 2)
+                {
+                    return BallPlay.KickOff;
+                }
+                else return possession == TeamId.Right ? BallPlay.GoalKick : BallPlay.CornerKick;
+            }
         }
 
         /// <inheritdoc/>

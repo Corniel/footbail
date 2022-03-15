@@ -14,8 +14,10 @@ public sealed class Engine
         var simulated = match;
         var ball = match.Ball;
         var ballPlay = BallPlay.InPlay;
+        var possession = match.Possession;
         var left = match.Left.ToArray();
         var right = match.Right.ToArray();
+        var score = match.Score;
         var left_v = Velocities(TeamId.Left, left, actions);
         var right_v = Velocities(TeamId.Right, right, actions);
 
@@ -24,37 +26,37 @@ public sealed class Engine
             steps++;
 
             ball = Ball(ball);
-
-            if (Physics.Pitch.OutOfPlay(ball.Position))
+            ballPlay = Physics.Pitch.OutOfPlay(ball.Position, possession);
+            switch (ballPlay)
             {
-                // TODO: ball in goal ball.Position.Y < Physics.Pitch.Goal
-                // TODO: re-arrange players
-                if (ball.Position.X < -Physics.Pitch.TouchLine / 2)
-                {
+                case BallPlay.InPlay:
+                    ballPlay = BallPlay.InPlay;
+                    Move(left, left_v);
+                    Move(right, right_v);
+                    break;
+                case BallPlay.KickOff:
+                    score = ball.Position.X < 0 ? score.RightScored() : score.LeftScored();
                     ball = Footbail.Ball.CenterSpot;
-                    ballPlay = BallPlay.KickOff;
-                    simulated = simulated with { Score = simulated.Score.RightScored() };
-                }
-                else if (ball.Position.X > +Physics.Pitch.TouchLine / 2)
-                {
-                    ball = Footbail.Ball.CenterSpot;
-                    ballPlay = BallPlay.KickOff;
-                    simulated = simulated with { Score = simulated.Score.LeftScored() };
-                }
-                else if (Math.Abs(ball.Position.Z) > Physics.Pitch.GoalLine / 2)
-                {
-                    ballPlay = BallPlay.ThrowIn;
-                }
-                else
-                {
-                    throw new NotImplementedException();
-                }
-            }
-            else
-            {
-                ballPlay = BallPlay.InPlay;
-                Move(left, left_v);
-                Move(right, right_v);
+                    break;
+                case BallPlay.ThrowIn:
+                    // TODO: get closed by none goalkeeper
+                    break;
+                case BallPlay.GoalKick:
+                    break;
+                case BallPlay.CornerKick:
+                    // TODO: get closed by none goalkeeper
+                    break;
+                case BallPlay.IndirectFreeKick:
+                    // TODO: get closed by
+                    break;
+                case BallPlay.DirectFreeKick:
+                    // TODO: get closed by
+                    break;
+                case BallPlay.PentaltyKick:
+                    // TODO: get keeper
+                    break;
+                case BallPlay.DroppedBall:
+                default: throw new NotSupportedException();
             }
         }
         return simulated with
@@ -64,6 +66,7 @@ public sealed class Engine
             TimeLeft = simulated.TimeLeft - steps,
             Left = new(TeamId.Left, left),
             Right = new(TeamId.Right, left),
+            Score = score,
         };
     }
 
